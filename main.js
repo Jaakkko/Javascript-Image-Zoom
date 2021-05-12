@@ -1,22 +1,37 @@
 const img = document.getElementById("picture")
 const frame = document.getElementById("frame")
 
-const scaleFactor = 2
-img.onload = () => {
-  const frameCoords = (event) => [
-    (event.offsetX - originX) * scale + originX,
-    (event.offsetY - originY) * scale + originY
-  ]
-  const limitOrigin = () => {
-    originX = Math.max(0, Math.min(frame.clientWidth, originX))
-    originY = Math.max(0, Math.min(frame.clientHeight, originY))
-  }
+let frameWidth = 0
+let frameHeight = 0
 
-  let scale = 1
-  let originX = 0
-  let originY = 0
+let scale = 1
+let originX = 0
+let originY = 0
+
+const frameCoords = (event) => [
+  (event.offsetX - originX) * scale + originX,
+  (event.offsetY - originY) * scale + originY
+]
+const limitOrigin = () => {
+  originX = Math.max(0, Math.min(frameWidth, originX))
+  originY = Math.max(0, Math.min(frameHeight, originY))
+}
+
+img.onload = () => {
+  frameWidth = frame.clientWidth
+  frameHeight = frame.clientHeight
+
   img.style.transformOrigin = `${originX}px ${originY}px`
   img.style.transform = `scale(${scale})`
+
+  window.onresize = () => {
+    originX = originX / frameWidth * frame.clientWidth
+    originY = originY / frameHeight * frame.clientHeight
+    img.style.transformOrigin = `${originX}px ${originY}px`
+    frameWidth = frame.clientWidth
+    frameHeight = frame.clientHeight
+  }
+
   img.onwheel = event => {
     event.preventDefault()
 
