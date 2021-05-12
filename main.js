@@ -7,6 +7,33 @@ let frameHeight = 0
 let scale = 1
 let originX = 0
 let originY = 0
+const transform = {
+  scale(frameX, frameY, imageX, imageY, scaleFactor) {
+    // update scale
+    scale = Math.max(1, scale * scaleFactor)
+
+    // update origin
+    const d = 1 - scale
+    if (d !== 0) {
+      originX = (frameX - imageX * scale) / d
+      originY = (frameY - imageY * scale) / d
+      limitOrigin()
+    }
+
+    img.style.transformOrigin = `${originX}px ${originY}px`
+    img.style.transform = `scale(${scale})`
+  },
+  translate(imageDeltaX, imageDeltaY) {
+    if (scale === 1) {
+      return
+    }
+    const d = (1 - scale) * window.devicePixelRatio
+    originX = imageDeltaX / d + originX
+    originY = imageDeltaY / d + originY
+    limitOrigin()
+    img.style.transformOrigin = `${originX}px ${originY}px`
+  }
+}
 
 const frameCoords = (event) => [
   (event.offsetX - originX) * scale + originX,
@@ -34,38 +61,13 @@ img.onload = () => {
 
   img.onwheel = event => {
     event.preventDefault()
-
-    const [frameX, frameY] = frameCoords(event)
-
-    // update scale
     const scaleFactor = event.deltaY < 0 ? 1.1 : (1 / 1.1)
-    scale = Math.max(1, scale * scaleFactor)
-
-    // update origin
-    const d = 1 - scale
-    if (d !== 0) {
-      originX = (frameX - event.offsetX * scale) / d
-      originY = (frameY - event.offsetY * scale) / d
-      limitOrigin()
-    }
-
-    img.style.transformOrigin = `${originX}px ${originY}px`
-    img.style.transform = `scale(${scale})`
-  }
-
-  function translate(event) {
-    if (scale === 1) {
-      return
-    }
-    const d = (1 - scale) * window.devicePixelRatio
-    originX = event.movementX / d + originX
-    originY = event.movementY / d + originY
-    limitOrigin()
-    img.style.transformOrigin = `${originX}px ${originY}px`
+    const [frameX, frameY] = frameCoords(event)
+    transform.scale(frameX, frameY, event.offsetX, event.offsetY, scaleFactor)
   }
 
   img.onpointerdown = (e) => {
-    img.onpointermove = translate
+    img.onpointermove = event => transform.translate(event.movementX, event.movementY)
     img.setPointerCapture(e.pointerId)
   }
   img.onpointerup = (e) => {
