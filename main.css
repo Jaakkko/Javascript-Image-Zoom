@@ -1,0 +1,16 @@
+.container {
+  display: flex;
+  justify-content: center;
+}
+
+#frame {
+  border: 2px hotpink solid;
+  overflow: hidden;
+  box-sizing: content-box;
+  padding: 0;
+}
+
+#picture {
+  width: 100%;
+  display: block;
+}
