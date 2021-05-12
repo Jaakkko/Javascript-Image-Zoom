@@ -53,18 +53,23 @@ img.onload = () => {
     img.style.transform = `scale(${scale})`
   }
 
-  let dragging = false
-  img.onmousedown = () => dragging = true
-  img.onmouseup = () => dragging = false
-  img.onmouseleave = () => dragging = false
-  img.onmousemove = (event) => {
-    if (!dragging || scale === 1) {
+  function translate(event) {
+    if (scale === 1) {
       return
     }
-    const d = 1 - scale
+    const d = (1 - scale) * window.devicePixelRatio
     originX = event.movementX / d + originX
     originY = event.movementY / d + originY
     limitOrigin()
     img.style.transformOrigin = `${originX}px ${originY}px`
+  }
+
+  img.onpointerdown = (e) => {
+    img.onpointermove = translate
+    img.setPointerCapture(e.pointerId)
+  }
+  img.onpointerup = (e) => {
+    img.onpointermove = null
+    img.releasePointerCapture(e.pointerId)
   }
 }
