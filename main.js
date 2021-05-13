@@ -46,6 +46,11 @@ const updateFrameCoords = () => {
   frameClientY = top + frame.clientTop
 }
 
+const updatePictureDimensions = () => {
+  const width = img.naturalWidth / img.naturalHeight * window.innerHeight
+  frame.style.width = `min(${width}px, 100%)`
+}
+
 const limitOrigin = () => {
   originX = Math.max(0, Math.min(frameWidth, originX))
   originY = Math.max(0, Math.min(frameHeight, originY))
@@ -56,10 +61,13 @@ window.onload = () => {
   frameWidth = frame.clientWidth
   frameHeight = frame.clientHeight
 
+  updatePictureDimensions()
+
   img.style.transformOrigin = `${originX}px ${originY}px`
   img.style.transform = `scale(${scale})`
 
   window.onresize = () => {
+    updatePictureDimensions()
     updateFrameCoords()
     originX = originX / frameWidth * frame.clientWidth
     originY = originY / frameHeight * frame.clientHeight

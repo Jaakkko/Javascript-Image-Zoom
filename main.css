@@ -6,11 +6,13 @@
 #frame {
   border: 2px hotpink solid;
   overflow: hidden;
-  box-sizing: content-box;
+  box-sizing: border-box;
   padding: 0;
+  max-height: 100vh;
 }
 
 #picture {
+  height: 100%;
   width: 100%;
   display: block;
   touch-action: none;
