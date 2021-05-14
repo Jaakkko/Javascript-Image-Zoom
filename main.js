@@ -1,5 +1,6 @@
 const img = document.getElementById("picture")
 const frame = document.getElementById("frame")
+const container = document.getElementById("container")
 
 let frameClientX = 0
 let frameClientY = 0
@@ -47,6 +48,7 @@ const updateFrameCoords = () => {
 }
 
 const updatePictureDimensions = () => {
+  container.style.maxHeight = `${window.innerHeight}px`
   const width = img.naturalWidth / img.naturalHeight * window.innerHeight
   frame.style.width = `min(${width}px, 100%)`
 }
